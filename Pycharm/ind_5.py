@@ -2,76 +2,79 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import datetime
 
 
-def get_way():
+def get_person():
+    """"
+    Запросить данные о человеке.
     """
-    Запросить данные о маршруте.
-    """
-    start = input('Название начального маршрута: ')
-    finish = input('Название конечного маршрута: ')
-    num = int(input('Номер маршрута: '))
+    name = input("Фамилия Имя: ")
+    number = int(input("Номер телефона: "))
+    bday = list(map(int, input("Дата рождения: ").split('.')))
+    d_bday = datetime.date(bday[2], bday[1], bday[0])
 
-    # Вернуть словарь.
+    # Создать словарь.
     return {
-        'start': start,
-        'finish': finish,
-        'num': num
-
+        'name': name,
+        'number': number,
+        'birthday': d_bday,
     }
 
 
-def display_way(numbers):
+def display_people(staff):
     """
-        Отобразить список маршрутов.
-        """
-    if numbers:
+    Список данных о людях.
+    """
+    if staff:
         # Заголовок таблицы.
         line = '+-{}-+-{}-+-{}-+-{}-+'.format(
             '-' * 4,
             '-' * 30,
-            '-' * 30,
-            '-' * 15
+            '-' * 20,
+            '-' * 14
         )
         print(line)
         print(
-            '| {:^4} | {:^30} | {:^30} | {:^15} |'.format(
-                "No",
-                "Название начального маршрута",
-                "Название конечного маршрута",
-                "Номер маршрута"
-            ))
+            '| {:^4} | {:^30} | {:^20} | {:^14} |'.format(
+                "№",
+                "Фамилия Имя",
+                "Номер телефона",
+                "Дата рождения"
+            )
+        )
         print(line)
 
-        # Вывести данные о всех маршрутах.
-        for idx, way in enumerate(numbers, 1):
+        # Вывести данные о всех людях.
+        for idx, person in enumerate(staff, 1):
             print(
-                '| {:>4} | {:<30} | {:<30} | {:>15} |'.format(
-                    idx,
-                    way.get('start', ''),
-                    way.get('finish', ''),
-                    way.get('num', 0)
-                ))
-            print(line)
+                f'| {idx:>4} |'
+                f' {person.get("name", ""):<30} |'
+                f' {person.get("number", 0):<20} |'
+                f' {person.get("birthday")}      |'
+            )
+        print(line)
+
     else:
-        print("Список пуст.")
+        print("Список людей пуст.")
 
 
-def find_way(numbers, nw):
+def find_nomer(staff, nomer):
     """
-    Выбрать маршрут с данным номером.
+    Выбрать людей с заданным номером телефона.
     """
-    # Список маршрутов
+    # Сформировать список людей.
     result = []
-    for h in numbers:
-        if nw in str(h.values()):
-            result.append(h)
+
+    for n in staff:
+        if nomer in n.values():
+            result.append(n)
 
     # Проверка на наличие записей
     if len(result) == 0:
         return print("Запись не найдена")
 
-    # Возвратить список выбранных работников.
+    # Возвратить список выбранных людей.
     return result
 
 
@@ -79,46 +82,48 @@ def main():
     """
     Главная функция программы.
     """
-    # Маршруты
-    ways = []
+    # Список людей.
+    people = []
 
     # Организовать бесконечный цикл запроса команд.
     while True:
         # Запросить команду из терминала.
-        command = input(">>> ").lower()
+        command = input("Введите команду >>> ").lower()
 
         # Выполнить действие в соответствие с командой.
         if command == 'exit':
             break
 
         elif command == 'add':
-            # Запросить данные о работнике.
-            way = get_way()
+            # Запросить данные о человеке.
+            person = get_person()
 
-            # Добавить словарь в список.
-            ways.append(way)
-
+            # Добавить в словарь список.
+            people.append(person)
             # Отсортировать список в случае необходимости.
-            if len(ways) > 1:
-                ways.sort(key=lambda item: item.get('num', 0))
+            if len(people) > 1:
+                people.sort(key=lambda item: item.get('d_bday', ''))
 
         elif command == 'list':
-            # Отобразить все маршруты.
-            display_way(ways)
+            # Отобразить всех людей.
+            display_people(people)
 
         elif command == 'find':
-            f = input('Введите номер маршрута: ')
-            selected = find_way(ways, f)
-            display_way(selected)
+            n = int(input('Введите номер телефона: '))
+
+            # Выбрать людей с заданной фамилией.
+            finded = find_nomer(people, n)
+            # Отобразить выбранных работников.
+            display_people(finded)
 
         elif command == 'help':
             # Вывести справку о работе с программой.
-            print("Список команд:\n")
-            print("add - добавить маршрут;")
-            print("list - вывести список маршрутов;")
-            print("find - вывод информации о маршруте;")
-            print("help - отобразить справку;")
-            print("exit - завершить работу с программой.")
+            print("Список команд:\n"
+                  "add - добавить человека;\n"
+                  "list - вывести список людей;\n"
+                  "find - найти человека по фамилии;\n"
+                  "help - отобразить справку;\n"
+                  "exit - завершить работу с программой.\n")
 
         else:
             print(f"Неизвестная команда {command}", file=sys.stderr)
