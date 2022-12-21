@@ -56,7 +56,7 @@ def display_people(staff):
         print(line)
 
     else:
-        print("Список людей пуст.")
+        print("Результат не найден")
 
 
 def find_nomer(staff, nomer):
@@ -72,7 +72,7 @@ def find_nomer(staff, nomer):
 
     # Проверка на наличие записей
     if len(result) == 0:
-        return print("Запись не найдена")
+        return None
 
     # Возвратить список выбранных людей.
     return result
